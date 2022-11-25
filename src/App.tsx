@@ -12,8 +12,9 @@ function App() {
 
   const fetchData = useCallback(async()=> {
     const response = await axios.get<AllCountriesAPI[]>(url);
+    const countries = response.data;
 
-    const promises = response.data.map(async country => {
+    const promises = countries.map(async country => {
       return {
         alpha3Code: country.alpha3Code,
         name: country.name,
@@ -28,9 +29,6 @@ function App() {
     fetchData().catch(console.error);
   }, [fetchData]);
 
-
-  console.log(clickedCountry);
-
   return (
     <div className="container d-flex justify-content-around">
       <div className="Countries">
@@ -42,7 +40,7 @@ function App() {
           />
         ))}
       </div>
-      {clickedCountry ? <Info/> : <div>Choose country to get info</div> }
+       <Info clickedCountry={clickedCountry}/>
     </div>
   );
 }

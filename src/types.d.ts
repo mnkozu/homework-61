@@ -8,3 +8,11 @@ export interface AllCountriesAPI {
   alpha3Code: string;
   independent: boolean;
 }
+
+export interface APICountryCode {
+  name: string;
+  flag: string;
+  capital: string;
+  population: number;
+  borders: AllCountries[];
+}
