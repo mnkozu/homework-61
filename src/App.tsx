@@ -1,24 +1,35 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {useCallback, useEffect, useState} from 'react';
 import './App.css';
+import {AllCountry, AllCountryAPI} from "./types";
+import axios from "axios";
+import Countrys from "./components/Countrys/Countrys";
+
+const url = "https://restcountries.com/v2/all?fields=alpha3Code,name";
 
 function App() {
+  const [allCountry, setAllCountry] = useState<AllCountry[]>([]);
+
+  const fetchData = useCallback(async()=> {
+    const response = await axios.get<AllCountryAPI[]>(url);
+
+    const promises = response.data.map(async country => {
+      return {
+        alpha3Code: country.alpha3Code,
+        name: country.name,
+      };
+    });
+
+    const allCountryList = await Promise.all(promises);
+    setAllCountry(allCountryList);
+  }, []);
+
+  useEffect(() => {
+    fetchData().catch(console.error);
+  }, [fetchData]);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Countrys allCountry={allCountry}/>
     </div>
   );
 }
