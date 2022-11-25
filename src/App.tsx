@@ -1,16 +1,17 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import './App.css';
-import {AllCountry, AllCountryAPI} from "./types";
+import {AllCountries, AllCountriesAPI} from "./types";
 import axios from "axios";
-import Countrys from "./components/Countrys/Countrys";
+import Info from "./components/Info/Info";
+import Country from "./components/Country/Country";
 
 const url = "https://restcountries.com/v2/all?fields=alpha3Code,name";
 
 function App() {
-  const [allCountry, setAllCountry] = useState<AllCountry[]>([]);
+  const [allCountries, setAllCountries] = useState<AllCountries[]>([]);
+  const [clickedCountry, setClickedCountry] = useState<string | null>(null);
 
   const fetchData = useCallback(async()=> {
-    const response = await axios.get<AllCountryAPI[]>(url);
+    const response = await axios.get<AllCountriesAPI[]>(url);
 
     const promises = response.data.map(async country => {
       return {
@@ -19,17 +20,29 @@ function App() {
       };
     });
 
-    const allCountryList = await Promise.all(promises);
-    setAllCountry(allCountryList);
+    const allCountriesList = await Promise.all(promises);
+    setAllCountries(allCountriesList);
   }, []);
 
   useEffect(() => {
     fetchData().catch(console.error);
   }, [fetchData]);
 
+
+  console.log(clickedCountry);
+
   return (
-    <div className="App">
-      <Countrys allCountry={allCountry}/>
+    <div className="container d-flex justify-content-around">
+      <div className="Countries">
+        {allCountries.map(country => (
+          <Country
+            key={country.alpha3Code}
+            name={country.name}
+            onClick={() => setClickedCountry(country.alpha3Code)}
+          />
+        ))}
+      </div>
+      {clickedCountry ? <Info/> : <div>Choose country to get info</div> }
     </div>
   );
 }

@@ -1,9 +1,9 @@
-export interface AllCountry {
+export interface AllCountries {
   name: string;
   alpha3Code: string;
 }
 
-export interface AllCountryAPI {
+export interface AllCountriesAPI {
   name: string;
   alpha3Code: string;
   independent: boolean;
